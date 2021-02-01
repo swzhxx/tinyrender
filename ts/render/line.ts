@@ -1,4 +1,5 @@
 import { TGAImage, TGAColor } from './TGAImage'
+import { Vertex } from './vertex'
 /**
  * Bresenham’s Line Drawing Algorithm
  * @param x0 
@@ -19,16 +20,16 @@ import { TGAImage, TGAColor } from './TGAImage'
  *  最终判断式  error2 - 2*dy > dx ? 
  *  https://zh.wikipedia.org/wiki/%E5%B8%83%E9%9B%B7%E6%A3%AE%E6%BC%A2%E5%A7%86%E7%9B%B4%E7%B7%9A%E6%BC%94%E7%AE%97%E6%B3%95
  */
-const line = (x0: number, y0: number, x1: number, y1: number, image: TGAImage, color: TGAColor) => {
+function _line(x0: number, y0: number, x1: number, y1: number, image: TGAImage, color: TGAColor) {
   let steep: boolean = false
   if (Math.abs(x0 - x1) < Math.abs(y0 - y1)) {
     let temp = x0
     x0 = y0
-    y0 = x0
+    y0 = temp
 
     temp = x1
     x1 = y1
-    y1 = x1
+    y1 = temp
     steep = true
   }
   if (x0 > x1) {
@@ -58,6 +59,10 @@ const line = (x0: number, y0: number, x1: number, y1: number, image: TGAImage, c
       error2 -= dx * 2
     }
   }
+}
+
+function line(v1: Vertex, v2: Vertex, image, color: TGAColor) {
+  return _line(v1.x, v1.y, v2.x, v2.y, image, color)
 }
 
 export default line

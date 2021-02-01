@@ -2311,7 +2311,7 @@ ml-array-rescale@^1.3.2:
 
 ml-matrix@^6.6.0:
   version "6.6.0"
-  resolved "https://registry.npmjs.org/ml-matrix/-/ml-matrix-6.6.0.tgz#b46f60b80baece9c05d8b368b97a520c15785f22"
+  resolved "https://registry.npm.taobao.org/ml-matrix/download/ml-matrix-6.6.0.tgz#b46f60b80baece9c05d8b368b97a520c15785f22"
   dependencies:
     ml-array-rescale "^1.3.2"
 

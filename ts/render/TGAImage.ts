@@ -35,16 +35,16 @@ class TGAImage {
     return (row * this.height + col) * 4
   }
 
-  set(row: number, col: number, color: TGAColor) {
+  set(x: number, y: number, color: TGAColor) {
     try {
-      let index: number = this.getIndex(parseInt(row.toString()), parseInt(col.toString()))
+      let index: number = this.getIndex(parseInt(y.toString()), parseInt(x.toString()))
       if (index == undefined) return
       this.data[index] = color[0]
       this.data[index + 1] = color[1]
       this.data[index + 2] = color[2]
       this.data[index + 3] = color[3]
     } catch (e) {
-      return console.error(`row ${row} col ${col}`, e)
+      return console.error(`row ${x} col ${y}`, e)
     }
   }
 
