@@ -9,9 +9,7 @@ export default function draw(context: CanvasRenderingContext2D, width: number, h
   line(13, 20, 80, 40, image1, [255, 255, 255, 255] as TGAColor)
   line(20, 13, 40, 80, image1, [255, 0, 0, 255] as TGAColor)
   line(80, 40, 13, 20, image1, [255, 0, 255, 255] as TGAColor)
-
-
-
+  image1.flipVertically()
   let imageData = image1.toImageData()
   context.putImageData(imageData, 0, 0)
 }

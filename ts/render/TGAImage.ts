@@ -52,37 +52,37 @@ class TGAImage {
     return new ImageData(Uint8ClampedArray.from(this.data), this.width, this.height)
   }
 
-  // flipVertically() {
-  //   if (!this.data.length) return
-  //   let half = this.height >> 1
-  //   for (let j = 0; j < half; j++) {
-  //     let l1start = j * this.width
-  //     let l1end = j + 1 * this.width
-  //     let l2start = (this.height - 1 - j) * this.width
-  //     let l2end = (this.height - j) * this.width
-  //     let l1 = this.data.slice(l1start, l1end)
-  //     let l2 = this.data.slice(l2start, l2end)
-  //     let i = 0
-  //     while (true) {
-  //       let index = l1start + i
-  //       if (index >= l1end) {
-  //         break
-  //       }
-  //       this.data[index] = l2[i]
-  //       i++
-  //     }
-  //     i = 0
-  //     while (true) {
-  //       let index = l2start + i
-  //       if (index >= l2end) {
-  //         break
-  //       }
-  //       this.data[index] = l1[i]
-  //       i++
-  //     }
+  flipVertically() {
+    if (!this.data.length) return
+    let half = this.height >> 1
+    for (let j = 0; j < half; j++) {
+      let l1start = j * this.width * 4
+      let l1end = l1start + this.width * 4
+      let l2start = (this.height - 1 - j) * this.width * 4
+      let l2end = l2start + this.width * 4
+      let l1 = this.data.slice(l1start, l1end)
+      let l2 = this.data.slice(l2start, l2end)
+      let i = 0
+      while (true) {
+        let index = l1start + i
+        if (index >= l1end) {
+          break
+        }
+        this.data[index] = l2[i]
+        i++
+      }
+      i = 0
+      while (true) {
+        let index = l2start + i
+        if (index >= l2end) {
+          break
+        }
+        this.data[index] = l1[i]
+        i++
+      }
 
-  //   }
-  // }
+    }
+  }
 }
 
 const image = (width: number, height: number, color: TGAColor = RGB): TGAImage => {

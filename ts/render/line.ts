@@ -14,8 +14,9 @@ import { TGAImage, TGAColor } from './TGAImage'
  * step4 :累计error 判断是否超过斜率，对y值进行补正。这里通过乘以2的方式避免了除法预算
  * error = dy / dx  判断error 是否大于0.5 
  *  ↓
- *  error - dy/dx > 0.5?  -> error2 - (dy/dx) * 2 > 1? -> error2 - dy > dx?
- *  最终判断式 error2 - dy  > dx?
+ *  error - dy/dx > 0.5?  -> 2*error - (dy/dx) * 2 > 1? ->  2*dx*error - 2*dy > dx
+ *  设 error2 = 2*dx* error
+ *  最终判断式  error2 - 2*dy > dx ? 
  *  https://zh.wikipedia.org/wiki/%E5%B8%83%E9%9B%B7%E6%A3%AE%E6%BC%A2%E5%A7%86%E7%9B%B4%E7%B7%9A%E6%BC%94%E7%AE%97%E6%B3%95
  */
 const line = (x0: number, y0: number, x1: number, y1: number, image: TGAImage, color: TGAColor) => {
