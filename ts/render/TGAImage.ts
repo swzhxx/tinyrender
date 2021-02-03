@@ -47,6 +47,7 @@ class TGAImage {
       return console.error(`row ${x} col ${y}`, e)
     }
   }
+  
 
   toImageData(): ImageData {
     return new ImageData(Uint8ClampedArray.from(this.data), this.width, this.height)

@@ -1,6 +1,6 @@
 import { Matrix } from 'ml-matrix'
 
-class Vertex {
+class Vec2 {
   private vector: any
   constructor(x: number, y: number) {
     this.vector = Matrix.columnVector([x, y])
@@ -19,27 +19,33 @@ class Vertex {
     this.vector.data[1][0] = val
   }
 
-  add(b: Vertex): Vertex {
+  add(b: Vec2): Vec2 {
     let matrix: any = Matrix.add(this.vector, b.vector)
-    return vertex(matrix.data[0][0], matrix.data[1][0])
+    return vec2(matrix.data[0][0], matrix.data[1][0])
   }
 
-  sub(b: Vertex): Vertex {
+  sub(b: Vec2): Vec2 {
     let matrix: any = Matrix.sub(this.vector, b.vector)
-    return vertex(matrix.data[0][0], matrix.data[1][0])
+    return vec2(matrix.data[0][0], matrix.data[1][0])
   }
 
-  mul(n: number): Vertex {
+  mul(n: number): Vec2 {
     this.vector.mul(n)
     return this
   }
+  normalize() {
+    let n = this.vector.norm()
+    return new Vec2(n.x, n.y)
+  }
+
+
 }
 
-function vertex(x: number, y: number): Vertex {
-  return new Vertex(x, y)
+function vec2(x: number, y: number): Vec2 {
+  return new Vec2(x, y)
 }
 
 
 
-export default vertex
-export { Vertex }
+export default vec2
+export { Vec2 }

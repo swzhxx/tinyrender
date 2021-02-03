@@ -17,8 +17,10 @@
     "webpack-cli": "^3.3.12"
   },
   "dependencies": {
+    "3d-model-manger": "git+https://github.com/swzhxx/3D-Model-Manger.git",
     "dot-obj": "^0.0.1",
     "file-loader": "^6.2.0",
+    "gl-matrix": "^3.3.0",
     "load-wavefront-obj": "^0.8.0",
     "ml-matrix": "^6.6.0",
     "raw-loader": "^4.0.2",

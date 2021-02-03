@@ -1,5 +1,5 @@
 import { TGAImage, TGAColor } from './TGAImage'
-import { Vertex } from './vertex'
+import { Vec2 } from '../utils/vec2'
 /**
  * Bresenham’s Line Drawing Algorithm
  * @param x0 
@@ -61,7 +61,7 @@ function _line(x0: number, y0: number, x1: number, y1: number, image: TGAImage, 
   }
 }
 
-function line(v1: Vertex, v2: Vertex, image, color: TGAColor) {
+function line(v1: Vec2, v2: Vec2, image, color: TGAColor) {
   return _line(v1.x, v1.y, v2.x, v2.y, image, color)
 }
 
