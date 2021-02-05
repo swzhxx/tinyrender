@@ -47,7 +47,15 @@ class TGAImage {
       return console.error(`row ${x} col ${y}`, e)
     }
   }
-  
+
+  get(x: number, y: number): TGAColor {
+
+    let index: number = this.getIndex(parseInt(y.toString()), parseInt(x.toString()))
+    if (index == undefined) return
+    let color = [this.data[index], this.data[index + 1], this.data[index + 2], this.data[index + 3]] as TGAColor
+    return color
+
+  }
 
   toImageData(): ImageData {
     return new ImageData(Uint8ClampedArray.from(this.data), this.width, this.height)

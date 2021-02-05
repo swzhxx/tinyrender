@@ -1,5 +1,6 @@
 import { Matrix } from 'ml-matrix'
 import { create, clone, dot, cross, normalize } from 'gl-matrix/vec3'
+import vec2, { Vec2 } from './vec2'
 class Vec3 {
   private vector: any
   constructor(x: number, y: number, z: number) {
@@ -44,6 +45,11 @@ class Vec3 {
     normalize(out, [this.x, this.y, this.z])
     return vec3(out[0], out[1], out[2])
   }
+
+  toVec2(): Vec2 {
+    return vec2(this.x, this.y)
+  }
+
   static dot(a: Vec3, b: Vec3): number {
     let _a = clone([a.x, a.y, a.z])
     let _b = clone([b.x, b.y, b.z])
