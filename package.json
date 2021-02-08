@@ -24,7 +24,10 @@
     "load-wavefront-obj": "^0.8.0",
     "ml-matrix": "^6.6.0",
     "raw-loader": "^4.0.2",
+    "tga": "^1.0.4",
     "three.js": "^0.77.1",
+    "url-loader": "^4.1.1",
+    "webgl-obj-loader": "^2.0.8",
     "webpack-dev-server": "^3.11.2"
   }
 }

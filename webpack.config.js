@@ -7,7 +7,7 @@ module.exports = (env, args) => {
   const isProductionMode = args.mode === 'production' ? 'production' : 'development'
 
   return {
-    entry: './ts/index.ts',
+    entry: './ts2/main.ts',
     mode: isProductionMode,
     output: {
       path: path.resolve(__dirname, './dist'),
@@ -28,6 +28,15 @@ module.exports = (env, args) => {
         {
           test: /\.obj$/,
           use: 'raw-loader',
+        },
+        {
+          test: /\.tga$/,
+          use: {
+            loader: 'url-loader',
+            options: {
+              limit: 81920000,
+            },
+          },
         },
       ],
     },

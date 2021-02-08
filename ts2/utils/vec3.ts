@@ -1,8 +1,9 @@
 import { Matrix } from 'ml-matrix'
 import { create, clone, dot, cross, normalize } from 'gl-matrix/vec3'
 import vec2, { Vec2 } from './vec2'
+import vec4, { Vec4 } from './vec4'
 class Vec3 {
-  private vector: any
+  vector: any
   constructor(x: number, y: number, z: number) {
     this.vector = Matrix.columnVector([x, y, z])
   }
@@ -24,7 +25,24 @@ class Vec3 {
   set z(val) {
     this.vector.data[2][0] = val
   }
-
+  set 0(val) {
+    this.x = val
+  }
+  get 0() {
+    return this.x
+  }
+  set 1(val) {
+    this.y = val
+  }
+  get 1() {
+    return this.y
+  }
+  set 2(val) {
+    this.z = val
+  }
+  get 2() {
+    return this.z
+  }
 
   add(b: Vec3): Vec3 {
     let matrix: any = Matrix.add(this.vector, b.vector)
@@ -52,6 +70,9 @@ class Vec3 {
 
   toVec2(): Vec2 {
     return vec2(this.x, this.y)
+  }
+  toVec4(): Vec4 {
+    return vec4(this.x, this.y, this.z, 1)
   }
 
   static dot(a: Vec3, b: Vec3): number {
