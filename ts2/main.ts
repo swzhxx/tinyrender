@@ -8,6 +8,7 @@ import { OBJ } from 'webgl-obj-loader'
 import vec4, { Vec4 } from "./utils/vec4"
 import Model from './model'
 import { Matrix } from 'ml-matrix'
+import vec2 from "./utils/vec2"
 
 const width = 800
 const height = 800
@@ -52,25 +53,31 @@ class GouraudShader implements IShader {
 
 }
 class Shader implements IShader {
-  public varyingIntensity: Vec3
+  public varyingIntensity: Array<number>
   public varyingUV
 
   constructor() {
-    this.varyingUV = Matrix.zeros(3, 2)
+    this.varyingUV = Matrix.zeros(2, 3)
+    this.varyingIntensity = []
   }
 
   vertex(iface: number, nthvert: number): Vec4 {
     let uv = model.getUv(iface, nthvert)
-    this.varyingUV.set(nthvert, 0, uv.x)
-    this.varyingUV.set(nthvert, 0, uv.y)
+    this.varyingUV.set(0, nthvert, uv.x)
+    this.varyingUV.set(1, nthvert, uv.y)
     let vertex = model.getVertFace(iface, nthvert)
+    this.varyingIntensity[nthvert] = Vec3.dot(vertex, lightDir)
     let _v = viewportM.mmul(projectionM.mmul(modelViewM.mmul(vertex.toVec4().vector)))
     return vec4(_v.get(0, 0), _v.get(1, 0), _v.get(2, 0), _v.get(3, 0))
   }
   fragment(bar: Vec3, color: TGAColor) {
     let varying = vec3(this.varyingIntensity[0], this.varyingIntensity[1], this.varyingIntensity[2])
     let intensity = Vec3.dot(varying, bar)
-    let c = model.diffuse(this.varyingUV)
+    let barMatrix = Matrix.columnVector([bar.x, bar.y, bar.z])
+
+    let _uv = this.varyingUV.mmul(barMatrix)
+    let uv = vec2(_uv.get(0, 0), _uv.get(1, 0))
+    let c = model.diffuse(uv)
     color[0] = c[0] * intensity
     color[1] = c[1] * intensity
     color[2] = c[2] * intensity
@@ -89,7 +96,7 @@ function main() {
   let image1: TGAImage = image(width, height, RGB)
   lookat(eye, center, up)
   viewport(width / 8, height / 8, width * 3 / 4, height * 3 / 4)
-  projection(-1 / eye.sub(center).norm())
+  projection(0)
   let shader = new Shader()
   let zbuffer: Array<number> = new Array(width * height).fill(-Infinity)
   for (let i = 0; i < model.faces.length; i++) {
@@ -104,6 +111,7 @@ function main() {
   context.putImageData(imageData, 0, 0)
 }
 
+
+// const mesh = new OBJ.Mesh(head)
+// console.log(mesh)
 main()
-const mesh = new OBJ.Mesh(head)
-console.log(mesh)

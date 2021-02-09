@@ -25,11 +25,13 @@ class Model {
   public diffusemap: TGAImage
   public normalmap: TGAImage
   public specularmap: TGAImage
+  public mesh: any
   public facesIndex: Array<any>
   constructor(objstr: string) {
     this.verts = []
     this.faces = []
     const mesh = new OBJ.Mesh(objstr)
+    this.mesh = mesh
     this.uv = mesh.textures.reduce((prev, ver, index) => {
       let temp
       if (index % 2 === 0) {
@@ -58,7 +60,7 @@ class Model {
       return prev
     }, []).reduce((prev, vers, index) => {
       let vertex = vec3(vers[0], vers[1], vers[2])
-      
+
       prev.push(vertex)
       return prev
     }, [])
@@ -80,6 +82,7 @@ class Model {
     let _tga = this.loadTexture(diffucsetga)
     this.diffusemap = new TGAImage(_tga.width, _tga.height, [255, 255, 255, 255])
     this.diffusemap.data = [..._tga.pixels]
+    this.diffusemap.flipVertically()
   }
 
 
@@ -107,7 +110,7 @@ class Model {
 
   diffuse(uvf: Vec2): TGAColor {
     let uv = vec2(uvf.x * this.diffusemap.width, uvf.y * this.diffusemap.height)
-    return this.diffusemap.get(uv[0], uv[1])
+    return this.diffusemap.get(uv.x, uv.y)
   }
 
   normal(uvf: Vec2): Vec3 {
@@ -130,7 +133,7 @@ class Model {
   }
 
   getUv(iface: number, ivert: number): Vec2 {
-    return this.uv[this.faces[iface][ivert][1]]
+    return this.uv[this.mesh.indices[iface * 3 + ivert]]
   }
 
 
