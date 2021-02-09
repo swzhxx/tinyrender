@@ -5064,6 +5064,10 @@ text-table@~0.2.0:
   version "0.2.0"
   resolved "https://registry.npmjs.org/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
 
+tga-js@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.npm.taobao.org/tga-js/download/tga-js-1.1.1.tgz#4b2f329f2e693117cb8ccf25dcf7723f4779d333"
+
 tga@^1.0.4:
   version "1.0.4"
   resolved "https://registry.npm.taobao.org/tga/download/tga-1.0.4.tgz#90e29cd069196d65accdc7355724d3d5c47af572"

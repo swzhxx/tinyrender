@@ -4,8 +4,12 @@ import vec2, { Vec2 } from './utils/vec2'
 import vec3, { Vec3 } from './utils/vec3'
 
 import diffucsetga from './assets/african_head_diffuse.tga'
+import nmtga from './assets/african_head_nm.tga'
+import spectga from './assets/african_head_spec.tga'
+import TgaLoader from 'tga-js'
 import { Buffer } from 'buffer'
-const TGA = require("tga")
+
+
 
 function _base64ToArrayBuffer(base64) {
   var binary_string = window.atob(base64)
@@ -83,6 +87,17 @@ class Model {
     this.diffusemap = new TGAImage(_tga.width, _tga.height, [255, 255, 255, 255])
     this.diffusemap.data = [..._tga.pixels]
     this.diffusemap.flipVertically()
+
+    _tga = this.loadTexture(nmtga)
+    this.normalmap = new TGAImage(_tga.width, _tga.height, [255, 255, 255, 255])
+    this.normalmap.data = [..._tga.pixels]
+    this.normalmap.flipVertically()
+
+
+    _tga = this.loadTexture(spectga)
+    this.specularmap = new TGAImage(_tga.width, _tga.height, [255, 255, 255, 255])
+    this.specularmap.data = [..._tga.pixels]
+    this.specularmap.flipVertically()
   }
 
 
@@ -103,9 +118,14 @@ class Model {
   }
 
   loadTexture(str: string) {
-    const tga = new TGA(_base64ToArrayBuffer(str.split(",")[1]))
-    console.log(tga)
-    return tga
+    const tgaloader = new TgaLoader()
+    tgaloader.load(_base64ToArrayBuffer(str.split(",")[1]))
+
+    return {
+      width: tgaloader.header.width,
+      height: tgaloader.header.height,
+      pixels: tgaloader.getImageData().data
+    }
   }
 
   diffuse(uvf: Vec2): TGAColor {
@@ -115,17 +135,17 @@ class Model {
 
   normal(uvf: Vec2): Vec3 {
     let uv: Vec2 = vec2(uvf.x * this.normalmap.width, uvf.y * this.normalmap.height)
-    let c: TGAColor = this.normalmap.get(uv[0], uv[1])
+    let c: TGAColor = this.normalmap.get(uv.x, uv.y)
     let temp = []
-    temp[0] = c[0] / 255 * - 1
-    temp[1] = c[0] / 255 * - 1
-    temp[2] = c[0] / 255 * - 1
+    temp[0] = c[0] / 255 * 2 - 1
+    temp[1] = c[1] / 255 * 2 - 1
+    temp[2] = c[2] / 255 * 2 - 1
     return vec3(temp[0], temp[1], temp[2])
   }
 
   specular(uvf: Vec2): number {
     let uv = vec2(uvf.x * this.specularmap.width, uvf.y * this.specularmap.height)
-    return this.specularmap.get(uv[0], uv[1])[0] / 1
+    return this.specularmap.get(uv.x, uv.y)[0] / 1
   }
 
   normalVector(iface: number, ivert: number) {

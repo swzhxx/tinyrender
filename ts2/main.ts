@@ -1,3 +1,4 @@
+import { normalize } from 'gl-matrix/vec3'
 
 import image, { RGB, TGAColor, TGAImage } from "./utils/TGAImage"
 import vec3, { Vec3 } from "./utils/vec3"
@@ -7,7 +8,7 @@ import head from './assets/head.obj'
 import { OBJ } from 'webgl-obj-loader'
 import vec4, { Vec4 } from "./utils/vec4"
 import Model from './model'
-import { Matrix } from 'ml-matrix'
+import { Matrix, inverse } from 'ml-matrix'
 import vec2 from "./utils/vec2"
 
 const width = 800
@@ -56,6 +57,9 @@ class Shader implements IShader {
   public varyingIntensity: Array<number>
   public varyingUV
 
+  public uniform_M
+  public uniform_MIT
+
   constructor() {
     this.varyingUV = Matrix.zeros(2, 3)
     this.varyingIntensity = []
@@ -71,16 +75,31 @@ class Shader implements IShader {
     return vec4(_v.get(0, 0), _v.get(1, 0), _v.get(2, 0), _v.get(3, 0))
   }
   fragment(bar: Vec3, color: TGAColor) {
-    let varying = vec3(this.varyingIntensity[0], this.varyingIntensity[1], this.varyingIntensity[2])
-    let intensity = Vec3.dot(varying, bar)
+    // let varying = vec3(this.varyingIntensity[0], this.varyingIntensity[1], this.varyingIntensity[2])
+
     let barMatrix = Matrix.columnVector([bar.x, bar.y, bar.z])
 
     let _uv = this.varyingUV.mmul(barMatrix)
     let uv = vec2(_uv.get(0, 0), _uv.get(1, 0))
-    let c = model.diffuse(uv)
-    color[0] = c[0] * intensity
-    color[1] = c[1] * intensity
-    color[2] = c[2] * intensity
+
+    let tempN = this.uniform_MIT.mmul(model.normal(uv).toVec4().vector)
+    let n = vec3(tempN.get(0, 0), tempN.get(1, 0), tempN.get(2, 0)).normalize()
+
+    let tempL = this.uniform_M.mmul(lightDir.toVec4().vector)
+    let l = vec3(tempL.get(0, 0), tempL.get(1, 0), tempL.get(2, 0)).normalize()
+
+    let r = n.mul(Vec3.dot(n, l) * 2).sub(l).normalize()
+
+    let diff = Math.max(0, Vec3.dot(n, l))
+
+    let spec = Math.pow(Math.max(r.z, 0), model.specular(uv))
+
+    let _c = model.diffuse(uv)
+
+    for (let i = 0; i < 3; i++) {
+      color[i] = Math.min(5 + _c[i] * (diff + spec * 0.5), 255)
+    }
+
     return false
   }
 
@@ -92,12 +111,17 @@ class Shader implements IShader {
 function main() {
   // const model = parseRead({ modelData: head })
   model = new Model(head)
+  console.log(model)
   const context: CanvasRenderingContext2D = getContext()
   let image1: TGAImage = image(width, height, RGB)
   lookat(eye, center, up)
   viewport(width / 8, height / 8, width * 3 / 4, height * 3 / 4)
   projection(0)
   let shader = new Shader()
+
+  shader.uniform_M = projectionM.mmul(modelViewM)
+  shader.uniform_MIT = inverse(projectionM.mmul(modelViewM)).transpose()
+
   let zbuffer: Array<number> = new Array(width * height).fill(-Infinity)
   for (let i = 0; i < model.faces.length; i++) {
     let screenCoords = []
