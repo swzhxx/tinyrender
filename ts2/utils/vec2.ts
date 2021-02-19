@@ -1,7 +1,7 @@
 import { Matrix } from 'ml-matrix'
 
 class Vec2 {
-  private vector: any
+  public vector: any
   constructor(x: number, y: number) {
     this.vector = Matrix.columnVector([x, y])
   }

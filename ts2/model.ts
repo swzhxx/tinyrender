@@ -5,6 +5,7 @@ import vec3, { Vec3 } from './utils/vec3'
 
 import diffucsetga from './assets/african_head_diffuse.tga'
 import nmtga from './assets/african_head_nm.tga'
+import nmTagentTga from './assets/african_head_nm_tangent.tga'
 import spectga from './assets/african_head_spec.tga'
 import TgaLoader from 'tga-js'
 import { Buffer } from 'buffer'
@@ -52,6 +53,24 @@ class Model {
       prev.push(vertex)
       return prev
     }, [])
+
+    this.normals = mesh.vertexNormals.reduce((prev, ver, index) => {
+      let temp
+      if (index % 3 === 0) {
+        temp = []
+        prev.push(temp)
+      } else {
+        temp = prev[prev.length - 1]
+      }
+      temp.push(ver)
+
+      return prev
+    }, []).reduce((prev, vers) => {
+      let vertex = vec3(vers[0], vers[1], vers[2])
+      prev.push(vertex)
+      return prev
+    }, [])
+
     this.verts = mesh.vertices.reduce((prev, ver, index) => {
       let temp
       if (index % 3 === 0) {
@@ -88,7 +107,7 @@ class Model {
     this.diffusemap.data = [..._tga.pixels]
     this.diffusemap.flipVertically()
 
-    _tga = this.loadTexture(nmtga)
+    _tga = this.loadTexture(nmTagentTga)
     this.normalmap = new TGAImage(_tga.width, _tga.height, [255, 255, 255, 255])
     this.normalmap.data = [..._tga.pixels]
     this.normalmap.flipVertically()
@@ -144,12 +163,13 @@ class Model {
   }
 
   specular(uvf: Vec2): number {
+
     let uv = vec2(uvf.x * this.specularmap.width, uvf.y * this.specularmap.height)
     return this.specularmap.get(uv.x, uv.y)[0] / 1
   }
 
-  normalVector(iface: number, ivert: number) {
-
+  normalVector(iface: number, ivert: number): Vec3 {
+    return this.normals[this.mesh.indices[iface * 3 + ivert]]
   }
 
   getUv(iface: number, ivert: number): Vec2 {
